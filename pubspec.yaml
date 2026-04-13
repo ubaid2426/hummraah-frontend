@@ -1,0 +1,141 @@
+name: hummraah
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  flutter_bloc: ^9.1.1
+  dartz: ^0.10.1
+  get_it: ^9.2.1
+  equatable: ^2.0.8
+  freezed: ^3.2.5
+  freezed_annotation: ^3.1.0
+  json_serializable: ^6.13.0
+  build_runner: ^2.11.1
+  dio: ^5.9.1
+  google_fonts: ^6.1.0
+  auto_size_text: ^3.0.0
+  hijri_calendar: ^1.0.7+7
+  # Media
+
+  video_player: ^2.8.3
+  chewie: ^1.7.5
+  cached_network_image: ^3.3.1
+  audioplayers: ^6.6.0
+
+
+  font_awesome_flutter: ^10.12.0
+  # UI & Animation
+  # google_fonts: ^6.1.0
+  flutter_svg: ^2.0.9
+  lottie: ^3.0.0
+  shimmer: ^3.0.0
+  animations: ^2.0.10
+  
+  # State Management
+  provider: ^6.1.1
+  
+  # Navigation
+  go_router: ^13.2.0
+  shared_preferences: ^2.5.4
+  # Local Storage
+  # shared_preferences: ^2.2.2
+  sqflite: ^2.4.2
+  path_provider: ^2.1.2
+  
+  # Networking
+  http: ^1.1.2
+  # dio: ^5.4.1
+  prayers_times: ^0.0.6
+  # Location & Maps
+  geolocator: ^10.1.0
+  geocoding: ^2.1.1
+  google_maps_flutter: ^2.17.0
+  # Utilities
+  intl: ^0.20.2
+  url_launcher: ^6.2.4
+  share_plus: ^12.0.2
+  connectivity_plus: ^5.0.2
+  device_info_plus: ^9.1.2
+  qibla_direction: ^1.0.1
+  latlong2: ^0.9.1
+  flutter_map: ^8.2.2
+  
+  # Notifications
+  # flutter_local_notifications: ^16.3.2
+  flutter_secure_storage: ^10.0.0
+  # QR Code
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^4.0.1
+  
+  # Permissions
+  permission_handler: ^11.3.0
+
+  # Localization
+  flutter_localizations:
+    sdk: flutter
+
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # flutter_lints: ^3.0.0
+  build_runner: ^2.4.8
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.8
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/lang/
+    - assets/images/Home_Screen/
+    - assets/videos/Umraah_Guidance/
+    - assets/images/praying_time/svg/
+    - assets/json/
+    # - images/a_dot_ham.jpeg
+
+  # fonts:
+  #   - family: Poppins
+  #     fonts:
+  #       - asset: assets/fonts/Poppins-Regular.ttf
+  #       - asset: assets/fonts/Poppins-Bold.ttf
+  #         weight: 700
+  #       - asset: assets/fonts/Poppins-SemiBold.ttf
+  #         weight: 600
+  #       - asset: assets/fonts/Poppins-Medium.ttf
+  #         weight: 500  
+  #   - family: Amiri
+  #     fonts:
+  #       - asset: assets/fonts/Amiri-Regular.ttf
+  #       - asset: assets/fonts/Amiri-Bold.ttf
+  #         weight: 700          
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
+# flutter_launcher_icons:
+#   android: true
+#   ios: true
+#   image_path: "assets/images/icons/app_icon.png"
+#   adaptive_icon_background: "#2C5F2D"
+#   adaptive_icon_foreground: "assets/images/icons/app_icon_foreground.png"
+
+# flutter_native_splash:
+#   color: "#F8F5F0"
+#   image: "assets/images/icons/splash_icon.png"
+#   android: true
+#   ios: true
+#   web: false

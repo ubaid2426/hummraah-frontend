@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Makkah Ziyarat Package",
+    "price": 150,
+    "description": "Visit Jabal Noor, Jabal Thawr, Mina, Arafat, and Muzdalifah"
+  },
+  {
+    "id": 2,
+    "name": "Madinah Ziyarat Package",
+    "price": 120,
+    "description": "Visit Masjid Quba, Mount Uhud, Seven Mosques, and Qiblatain"
+  },
+  {
+    "id": 3,
+    "name": "Complete Ziyarat Package",
+    "price": 250,
+    "description": "Both Makkah and Madinah historical sites with guide"
+  },
+  {
+    "id": 4,
+    "name": "Premium Guided Tour",
+    "price": 350,
+    "description": "VIP access with private guide and transportation"
+  }
+]

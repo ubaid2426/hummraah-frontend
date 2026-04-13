@@ -1,0 +1,51 @@
+// lib/data/dua_data.dart
+import '../../features/auth/data/models/dua_model.dart';
+// import '../models/dua_model.dart';
+
+List<DuaModel> allDuas = [
+  DuaModel(
+    id: '1',
+    title: 'Dua for Entering Masjid al-Haram',
+    titleArabic: 'دخول المسجد الحرام',
+    titleUrdu: 'مسجد الحرام میں داخلے کی دعا',
+    arabicText: 'اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ',
+    translation: 'O Allah, open for me the doors of Your mercy',
+    transliteration: 'Allahumma iftah li abwaba rahmatik',
+    urduTranslation: 'اے اللہ، میرے لیے اپنی رحمت کے دروازے کھول دے',
+    audioUrl: 'assets/audio/duas/dua_001.mp3',
+    category: 'Before Umrah',
+    isOffline: true,
+    times: 1,
+    reference: 'Muslim',
+  ),
+  DuaModel(
+    id: '2',
+    title: 'Dua at Seeing Kaaba',
+    titleArabic: 'رؤية الكعبة',
+    titleUrdu: 'کعبہ دیکھنے کی دعا',
+    arabicText: 'اللَّهُمَّ زِدْ هَذَا الْبَيْتَ تَشْرِيفًا وَتَعْظِيمًا وَتَكْرِيمًا وَمَهَابَةً',
+    translation: 'O Allah, increase this House in honor, veneration, respect, and awe',
+    transliteration: 'Allahumma zid hadhal bayta tashrifan wa ta\'ziman wa takriman wa mahaba',
+    urduTranslation: 'اے اللہ، اس گھر کی عزت، عظمت، تکریم اور ہیبت میں اضافہ فرما',
+    audioUrl: 'assets/audio/duas/dua_002.mp3',
+    category: 'During Tawaf',
+    isOffline: true,
+    times: 1,
+    reference: 'Ibn Majah',
+  ),
+  DuaModel(
+    id: '3',
+    title: 'Dua for Tawaf',
+    titleArabic: 'دعاء الطواف',
+    titleUrdu: 'طواف کی دعا',
+    arabicText: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
+    translation: 'Our Lord, give us in this world good and in the Hereafter good and protect us from the punishment of the Fire',
+    transliteration: 'Rabbana atina fid dunya hasanatan wa fil akhirati hasanatan wa qina adhaban nar',
+    urduTranslation: 'اے ہمارے رب، ہمیں دنیا میں بھی بھلائی دے اور آخرت میں بھی بھلائی دے اور ہمیں جہنم کے عذاب سے بچا',
+    audioUrl: 'assets/audio/duas/dua_003.mp3',
+    category: 'During Tawaf',
+    isOffline: true,
+    times: 7,
+    reference: 'Quran 2:201',
+  ),
+];

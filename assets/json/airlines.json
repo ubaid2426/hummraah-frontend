@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "name": "Emirates Airlines",
+    "code": "EK"
+  },
+  {
+    "id": 2,
+    "name": "Saudia Airlines",
+    "code": "SV"
+  },
+  {
+    "id": 3,
+    "name": "Qatar Airways",
+    "code": "QR"
+  },
+  {
+    "id": 4,
+    "name": "Etihad Airways",
+    "code": "EY"
+  },
+  {
+    "id": 5,
+    "name": "Fly Dubai",
+    "code": "FZ"
+  }
+]
