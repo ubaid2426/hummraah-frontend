@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-
+import '/core/services/api/api_service.dart';
 import 'otp_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -50,18 +49,46 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _handleSignup() {
+  // void _handleSignup() {
+  //   if (_formKey.currentState!.validate()) {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       PageRouteBuilder(
+  //         transitionDuration: const Duration(milliseconds: 500),
+  //         pageBuilder: (context, animation, _) {
+  //           return FadeTransition(
+  //             opacity: animation,
+  //             child: OTPScreen(email: _emailController.text),
+  //           );
+  //         },
+  //       ),
+  //     );
+  //   }
+  // }
+  void _handleSignup() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
+      final api = ApiService();
+
+      await api.register({
+        "fullName": _fullNameController.text,
+        "email": _emailController.text,
+        "mobileNumber": _mobileController.text,
+        "password": _passwordController.text,
+        "address": _addressController.text,
+        "emergencyNumber": _emergencyController.text,
+        "country": _selectedCountry,
+        "cnic": "3130462340013",
+        "passportNumber": "AB1234567",
+        "passportExpiryDate": "2030-12-31",
+      });
+
+      // OTP bhejo
+      await api.sendOtp(_emailController.text);
+
+      Navigator.push(
         context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 500),
-          pageBuilder: (context, animation, _) {
-            return FadeTransition(
-              opacity: animation,
-              child: OTPScreen(email: _emailController.text),
-            );
-          },
+        MaterialPageRoute(
+          builder: (_) => OTPScreen(email: _emailController.text),
         ),
       );
     }
@@ -75,10 +102,7 @@ class _SignupScreenState extends State<SignupScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF2E7D32).withOpacity(0.05),
-              Colors.white,
-            ],
+            colors: [const Color(0xFF2E7D32).withOpacity(0.05), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -174,8 +198,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   validator: (v) => v!.isEmpty
                                       ? 'Enter email'
                                       : !v.contains('@')
-                                          ? 'Invalid email'
-                                          : null,
+                                      ? 'Invalid email'
+                                      : null,
                                 ),
                                 const SizedBox(height: 16),
                                 _buildInputField(
@@ -193,17 +217,20 @@ class _SignupScreenState extends State<SignupScreen> {
                                   label: 'Password',
                                   obscure: _obscurePassword,
                                   onToggle: () => setState(
-                                      () => _obscurePassword = !_obscurePassword),
+                                    () => _obscurePassword = !_obscurePassword,
+                                  ),
                                 ),
                                 const SizedBox(height: 16),
                                 _buildPasswordField(
                                   controller: _confirmPasswordController,
                                   label: 'Confirm Password',
                                   obscure: _obscureConfirmPassword,
-                                  onToggle: () => setState(() =>
-                                      _obscureConfirmPassword =
-                                          !_obscureConfirmPassword),
-                                  validator: (v) => v != _passwordController.text
+                                  onToggle: () => setState(
+                                    () => _obscureConfirmPassword =
+                                        !_obscureConfirmPassword,
+                                  ),
+                                  validator: (v) =>
+                                      v != _passwordController.text
                                       ? 'Passwords do not match'
                                       : null,
                                 ),
@@ -278,8 +305,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             Navigator.pushReplacement(
                               context,
                               PageRouteBuilder(
-                                transitionDuration:
-                                    const Duration(milliseconds: 500),
+                                transitionDuration: const Duration(
+                                  milliseconds: 500,
+                                ),
                                 pageBuilder: (context, animation, _) {
                                   return FadeTransition(
                                     opacity: animation,
@@ -380,7 +408,9 @@ class _SignupScreenState extends State<SignupScreen> {
           prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF2E7D32)),
           suffixIcon: IconButton(
             icon: Icon(
-              obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+              obscure
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
               color: const Color(0xFF6B6B7A),
             ),
             onPressed: onToggle,
@@ -423,10 +453,7 @@ class _SignupScreenState extends State<SignupScreen> {
           labelStyle: TextStyle(color: Color(0xFF6B6B7A)),
         ),
         items: _countries.map((country) {
-          return DropdownMenuItem(
-            value: country,
-            child: Text(country),
-          );
+          return DropdownMenuItem(value: country, child: Text(country));
         }).toList(),
         onChanged: (value) {
           setState(() {
@@ -453,7 +480,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
 
   void _handleLogin() {
-    if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -477,10 +505,7 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              const Color(0xFF2E7D32).withOpacity(0.1),
-              Colors.white,
-            ],
+            colors: [const Color(0xFF2E7D32).withOpacity(0.1), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -600,10 +625,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                     labelText: 'Email Address',
-                                    labelStyle:
-                                        const TextStyle(color: Color(0xFF6B6B7A)),
-                                    prefixIcon: const Icon(Icons.email_outlined,
-                                        color: Color(0xFF2E7D32)),
+                                    labelStyle: const TextStyle(
+                                      color: Color(0xFF6B6B7A),
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.email_outlined,
+                                      color: Color(0xFF2E7D32),
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(16),
                                       borderSide: BorderSide.none,
@@ -635,10 +663,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   obscureText: _obscurePassword,
                                   decoration: InputDecoration(
                                     labelText: 'Password',
-                                    labelStyle:
-                                        const TextStyle(color: Color(0xFF6B6B7A)),
-                                    prefixIcon: const Icon(Icons.lock_outline,
-                                        color: Color(0xFF2E7D32)),
+                                    labelStyle: const TextStyle(
+                                      color: Color(0xFF6B6B7A),
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.lock_outline,
+                                      color: Color(0xFF2E7D32),
+                                    ),
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _obscurePassword
@@ -647,7 +678,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         color: const Color(0xFF6B6B7A),
                                       ),
                                       onPressed: () => setState(
-                                          () => _obscurePassword = !_obscurePassword),
+                                        () => _obscurePassword =
+                                            !_obscurePassword,
+                                      ),
                                     ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(16),
@@ -678,13 +711,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                         },
                                         activeColor: const Color(0xFF2E7D32),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
                                         ),
                                       ),
                                       const Text(
                                         'Remember me',
-                                        style: TextStyle(color: Color(0xFF6B6B7A)),
+                                        style: TextStyle(
+                                          color: Color(0xFF6B6B7A),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -750,8 +786,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.pushReplacement(
                               context,
                               PageRouteBuilder(
-                                transitionDuration:
-                                    const Duration(milliseconds: 500),
+                                transitionDuration: const Duration(
+                                  milliseconds: 500,
+                                ),
                                 pageBuilder: (context, animation, _) {
                                   return FadeTransition(
                                     opacity: animation,

@@ -33,7 +33,8 @@ class _LoginPageState extends State<LoginPage> {
           );
         } else if (state is AuthSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Welcome ${state.user.email}!')),
+            // SnackBar(content: Text('Welcome ${state.user.email}!')),
+           SnackBar(content: Text('Welcome ${state.user?.email ?? "User"}!')),
           );
         }
       },
