@@ -14,6 +14,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _mobileController = TextEditingController();
+  final _cnicController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _addressController = TextEditingController();
@@ -42,6 +43,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _fullNameController.dispose();
     _emailController.dispose();
     _mobileController.dispose();
+    _cnicController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _addressController.dispose();
@@ -49,22 +51,6 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  // void _handleSignup() {
-  //   if (_formKey.currentState!.validate()) {
-  //     Navigator.pushReplacement(
-  //       context,
-  //       PageRouteBuilder(
-  //         transitionDuration: const Duration(milliseconds: 500),
-  //         pageBuilder: (context, animation, _) {
-  //           return FadeTransition(
-  //             opacity: animation,
-  //             child: OTPScreen(email: _emailController.text),
-  //           );
-  //         },
-  //       ),
-  //     );
-  //   }
-  // }
   void _handleSignup() async {
     if (_formKey.currentState!.validate()) {
       final api = ApiService();
@@ -73,11 +59,11 @@ class _SignupScreenState extends State<SignupScreen> {
         "fullName": _fullNameController.text,
         "email": _emailController.text,
         "mobileNumber": _mobileController.text,
+        "cnic": _cnicController.text,
         "password": _passwordController.text,
         "address": _addressController.text,
         "emergencyNumber": _emergencyController.text,
         "country": _selectedCountry,
-        "cnic": "3130462340013",
         "passportNumber": "AB1234567",
         "passportExpiryDate": "2030-12-31",
       });
@@ -209,6 +195,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                   keyboardType: TextInputType.phone,
                                   validator: (v) => v!.isEmpty || v.length < 10
                                       ? 'Valid mobile number required'
+                                      : null,
+                                ),
+                                const SizedBox(height: 16),
+                                _buildInputField(
+                                  controller: _cnicController,
+                                  label: 'CNIC',
+                                  icon: Icons.phone_android_outlined,
+                                  keyboardType: TextInputType.phone,
+                                  validator: (v) => v!.isEmpty || v.length < 10
+                                      ? 'Valid CNIC number required'
                                       : null,
                                 ),
                                 const SizedBox(height: 16),

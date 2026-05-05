@@ -27,4 +27,11 @@ class ApiClient {
       throw Exception(response.body);
     }
   }
+Future<dynamic> get(String endpoint) async {
+    final uri = Uri.parse(ApiEndpoints.baseUrl + endpoint);
+
+    final response = await http.get(uri, headers: headers);
+
+    return _handleResponse(response);
+  }
 }

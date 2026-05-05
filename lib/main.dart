@@ -233,6 +233,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'core/di/service_locator.dart';
 
 // Core
 import 'core/localization/app_localizations.dart';
@@ -271,6 +272,8 @@ import 'features/auth/data/datasources/auth_remote_data_source.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/usecases/login.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/bloc/booking_bloc.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -283,6 +286,7 @@ void main() async {
   }
 
   await LocalStorageService().init();
+  await init();
 
   runApp(const HummraahApp());
 }
@@ -293,25 +297,35 @@ class HummraahApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
+      // providers: [
+      //   // 🔵 THEME + LANGUAGE + OTHER PROVIDERS
+      //   ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      //   ChangeNotifierProvider(create: (_) => LanguageProvider()),
+      //   ChangeNotifierProvider(create: (_) => AuthProvider()),
+      //   ChangeNotifierProvider(create: (_) => JourneyProvider()),
+
+      //   // 🔥 BLOC (AUTH)
+      //  BlocProvider<AuthBloc>(
+      //     create: (_) => AuthBloc(
+      //       Login(
+      //         AuthRepositoryImpl(
+      //           remoteDataSource: AuthRemoteDataSource(
+      //             ApiService(), // 👈 FIX HERE (NO named parameter)
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ],
       providers: [
-        // 🔵 THEME + LANGUAGE + OTHER PROVIDERS
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => JourneyProvider()),
 
-        // 🔥 BLOC (AUTH)
-       BlocProvider<AuthBloc>(
-          create: (_) => AuthBloc(
-            Login(
-              AuthRepositoryImpl(
-                remoteDataSource: AuthRemoteDataSource(
-                  ApiService(), // 👈 FIX HERE (NO named parameter)
-                ),
-              ),
-            ),
-          ),
-        ),
+        BlocProvider<AuthBloc>(create: (_) => sl<AuthBloc>()),
+
+        BlocProvider<BookingBloc>(create: (_) => sl<BookingBloc>()),
       ],
 
       child: Consumer2<ThemeProvider, LanguageProvider>(

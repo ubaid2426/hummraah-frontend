@@ -18,4 +18,13 @@ class ApiService {
   Future<dynamic> sendOtp(String email) async {
     return await client.post(ApiEndpoints.sendOtp, {"email": email});
   }
+  // 🔹 BOOKING
+  // Future<dynamic> getBookings() async {
+  // return await client.post(ApiEndpoints.getBookings, {});
+  // }
+  Future<dynamic> getBookings() async {
+    return await client.get(ApiEndpoints.getBookings);
+  }
+  
+
 }
