@@ -8,7 +8,13 @@ class LocalStorageService {
   LocalStorageService._internal();
 
   late SharedPreferences _prefs;
-
+  static Future<LocalStorageService> getInstance() async {
+    if (_instance == null) {
+      // _instance = LocalStorageService();
+      // await _instance!._init();
+    }
+    return _instance!;
+  }
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -80,4 +86,14 @@ class LocalStorageService {
   Future<bool> clear() async {
     return await _prefs.clear();
   }
+
+    // Check if token exists and is valid format
+  Future<bool> hasValidToken() async {
+    final token = await getString('token');
+    return token != null && token.isNotEmpty && token.length > 10;
+  }
+
+
+
+  
 }

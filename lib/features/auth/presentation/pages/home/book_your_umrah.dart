@@ -1,6 +1,16 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'dart:convert';
+
+import 'package:hummraah/features/auth/data/models/booking_request_model.dart';
+import 'package:hummraah/features/auth/data/models/booking_response_model.dart';
+import 'package:hummraah/features/auth/presentation/bloc/booking_bloc.dart';
+import 'package:hummraah/features/auth/presentation/bloc/booking_event.dart';
+import 'package:hummraah/features/auth/presentation/bloc/booking_state.dart';
 
 class BookYourUmrahScreen extends StatefulWidget {
   const BookYourUmrahScreen({super.key});
@@ -281,6 +291,65 @@ class _BookYourUmrahScreenState extends State<BookYourUmrahScreen> {
   void initState() {
     super.initState();
     loadJsonData();
+  }
+
+  void _submitBooking() async {
+    // Validate required fields
+    if (selectedDepartureAirport.isEmpty) {
+      _showErrorSnackBar('Please select departure airport');
+      return;
+    }
+
+    if (selectedDestinationAirport.isEmpty) {
+      _showErrorSnackBar('Please select destination airport');
+      return;
+    }
+
+    if (startDate == null || endDate == null) {
+      _showErrorSnackBar('Please select travel dates');
+      return;
+    }
+
+    // Get special requests text from a TextEditingController (add this to your state)
+    // You can add a text field for special requests in your UI
+
+    // Create booking request
+    final bookingRequest = BookingRequestModel(
+      departureAirportCode: selectedDepartureAirport,
+      destinationAirportCode: selectedDestinationAirport,
+      startDate: startDate!.toIso8601String().split('T')[0],
+      endDate: endDate!.toIso8601String().split('T')[0],
+      adultsCount: adults,
+      childrenCount: children,
+      infantsCount: infants,
+      packageType: selectedPackageType,
+      hotelDistance: selectedHotelDistance,
+      roomType: selectedRoomType,
+      mealIncluded: mealIncluded,
+      flightIncluded: transportFlightIncluded,
+      selectedAirline: transportFlightIncluded ? selectedAirline : null,
+      transportType: selectedTransportType,
+      ziyaratIncluded: ziyaratIncluded,
+      selectedZiyaratPackages: ziyaratIncluded
+          ? selectedZiyaratPackages.map((p) => p['name'] as String).toList()
+          : null,
+      // specialRequests: _specialRequestsController.text.isNotEmpty
+      // ? _specialRequestsController.text
+      // : null,
+    );
+
+    // Add the event to bloc
+    context.read<BookingBloc>().add(SubmitBookingEvent(bookingRequest));
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> loadJsonData() async {
@@ -1886,61 +1955,56 @@ class _BookYourUmrahScreenState extends State<BookYourUmrahScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (selectedDepartureAirport.isEmpty ||
-                                selectedDestinationAirport.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Please select departure and destination airports',
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-                            if (startDate == null || endDate == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Please select start and end dates',
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-                            showSuccessModal();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: Colors.teal.shade700,
-                            foregroundColor: Colors.white,
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.check_circle, size: 24),
-                              const SizedBox(width: 10),
-                              Text(
-                                'Submit Booking',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                ),
+                      // Replace the existing submit button with BlocListener
+                      BlocListener<BookingBloc, BookingState>(
+                        listener: (context, state) {
+                          if (state is BookingLoading) {
+                            _showLoadingDialog();
+                          }
+
+                          if (state is BookingSuccess) {
+                            Navigator.pop(context); // Close loading dialog
+                            _showSuccessModal(state.response);
+                          }
+
+                          if (state is BookingError) {
+                            Navigator.pop(context); // Close loading dialog
+                            _showErrorSnackBar(state.message);
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _submitBooking,
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: Colors.teal.shade700,
+                              foregroundColor: Colors.white,
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                            ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.check_circle, size: 24),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Submit Booking',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
+
+                      // Add helper methods
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -1960,6 +2024,150 @@ class _BookYourUmrahScreenState extends State<BookYourUmrahScreen> {
         stayDuration = '$days days ${days > 1 ? 'nights' : 'night'}';
       });
     }
+  }
+
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Processing your booking...'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showSuccessModal(BookingResponseModel response) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.green.shade50,
+                ),
+                child: Icon(
+                  Icons.check_circle,
+                  color: Colors.green.shade600,
+                  size: 70,
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Booking Submitted Successfully!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.teal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                response.message,
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.teal.shade50, Colors.teal.shade100],
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.teal.shade200),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Booking Details',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
+                      ),
+                    ),
+                    const Divider(),
+                    const SizedBox(height: 8),
+                    _buildSummaryRow(
+                      Icons.receipt,
+                      'Booking Reference',
+                      response.bookingReference,
+                    ),
+                    _buildSummaryRow(
+                      Icons.attach_money,
+                      'Total Price',
+                      '\$${response.totalPrice.toStringAsFixed(2)}',
+                    ),
+                    _buildSummaryRow(
+                      Icons.info,
+                      'Status',
+                      response.status.toUpperCase(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal.shade700,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: const Text(
+                    'Close',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildSectionCard({

@@ -50,13 +50,15 @@ class _MainDrawerState extends State<MainDrawer> {
                   height: 260,
                   width: 260,
                   decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                        'assets/images/login/applogo.png',
-                      ), // Adjust the image path
-                      fit: BoxFit.contain, // Adjust the fit as needed
-                    ),
+                    // image: DecorationImage(
+                    //   image: AssetImage(
+                    //     'assets/images/login/applogo.png',
+                    //   ), // Adjust the image path
+                    //   fit: BoxFit.contain, // Adjust the fit as needed
+                    // ),
+                    
                   ),
+                  // child: AssetsVideo
                 ),
               ],
             ),

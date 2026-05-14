@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hummraah/features/auth/presentation/pages/Login_Page/login%20_screen.dart';
 import '/core/services/api/api_service.dart';
 import 'otp_screen.dart';
+import 'package:hummraah/core/services/api/api_client.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -53,22 +55,21 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _handleSignup() async {
     if (_formKey.currentState!.validate()) {
-      final api = ApiService();
+      final api = ApiService(ApiClient()); // ✅ FIX
 
       await api.register({
         "fullName": _fullNameController.text,
         "email": _emailController.text,
         "mobileNumber": _mobileController.text,
-        "cnic": _cnicController.text,
         "password": _passwordController.text,
         "address": _addressController.text,
         "emergencyNumber": _emergencyController.text,
         "country": _selectedCountry,
+        "cnic": _cnicController.text,
         "passportNumber": "AB1234567",
         "passportExpiryDate": "2030-12-31",
       });
 
-      // OTP bhejo
       await api.sendOtp(_emailController.text);
 
       Navigator.push(
@@ -98,7 +99,11 @@ class _SignupScreenState extends State<SignupScreen> {
                 top: 20,
                 left: 16,
                 child: IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+
+                  Navigator.pop(context);
+                  print("Back Button Pressed");
+                  },
                   icon: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -198,16 +203,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                       : null,
                                 ),
                                 const SizedBox(height: 16),
-                                _buildInputField(
-                                  controller: _cnicController,
-                                  label: 'CNIC',
-                                  icon: Icons.phone_android_outlined,
-                                  keyboardType: TextInputType.phone,
-                                  validator: (v) => v!.isEmpty || v.length < 10
-                                      ? 'Valid CNIC number required'
-                                      : null,
-                                ),
-                                const SizedBox(height: 16),
                                 _buildPasswordField(
                                   controller: _passwordController,
                                   label: 'Password',
@@ -248,6 +243,15 @@ class _SignupScreenState extends State<SignupScreen> {
                                   keyboardType: TextInputType.phone,
                                   validator: (v) => v!.isEmpty || v.length < 10
                                       ? 'Valid emergency contact required'
+                                      : null,
+                                ),
+                                _buildInputField(
+                                  controller: _cnicController,
+                                  label: 'CNIC Number',
+                                  icon: Icons.emergency_outlined,
+                                  keyboardType: TextInputType.phone,
+                                  validator: (v) => v!.isEmpty || v.length < 10
+                                      ? 'Valid CNIC Number required'
                                       : null,
                                 ),
                               ],
@@ -456,360 +460,6 @@ class _SignupScreenState extends State<SignupScreen> {
             _selectedCountry = value!;
           });
         },
-      ),
-    );
-  }
-}
-
-// ==================== LOGIN SCREEN ====================
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _rememberMe = false;
-
-  void _handleLogin() {
-    if (_emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 500),
-          pageBuilder: (context, animation, _) {
-            return FadeTransition(
-              opacity: animation,
-              child: OTPScreen(email: _emailController.text),
-            );
-          },
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [const Color(0xFF2E7D32).withOpacity(0.1), Colors.white],
-          ),
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Positioned(
-                top: 20,
-                left: 16,
-                child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(Icons.arrow_back_rounded, size: 20),
-                  ),
-                ),
-              ),
-              SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 80, 24, 40),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 600),
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, 20 * (1 - value)),
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF2E7D32).withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.mosque_rounded,
-                                size: 40,
-                                color: Color(0xFF2E7D32),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 600),
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, 20 * (1 - value)),
-                            child: const Text(
-                              'Welcome Back!',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1B5E20),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 600),
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: const Text(
-                            'Continue your spiritual journey',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFF6B6B7A),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 40),
-                    TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 600),
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.03),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: TextFormField(
-                                  controller: _emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email Address',
-                                    labelStyle: const TextStyle(
-                                      color: Color(0xFF6B6B7A),
-                                    ),
-                                    prefixIcon: const Icon(
-                                      Icons.email_outlined,
-                                      color: Color(0xFF2E7D32),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.03),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: _obscurePassword,
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    labelStyle: const TextStyle(
-                                      color: Color(0xFF6B6B7A),
-                                    ),
-                                    prefixIcon: const Icon(
-                                      Icons.lock_outline,
-                                      color: Color(0xFF2E7D32),
-                                    ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _obscurePassword
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                        color: const Color(0xFF6B6B7A),
-                                      ),
-                                      onPressed: () => setState(
-                                        () => _obscurePassword =
-                                            !_obscurePassword,
-                                      ),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _rememberMe,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _rememberMe = value!;
-                                          });
-                                        },
-                                        activeColor: const Color(0xFF2E7D32),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                        ),
-                                      ),
-                                      const Text(
-                                        'Remember me',
-                                        style: TextStyle(
-                                          color: Color(0xFF6B6B7A),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      'Forgot Password?',
-                                      style: TextStyle(
-                                        color: Color(0xFF2E7D32),
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 32),
-                    TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: 1),
-                      duration: const Duration(milliseconds: 600),
-                      builder: (context, value, child) {
-                        return Opacity(
-                          opacity: value,
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 56,
-                            child: ElevatedButton(
-                              onPressed: _handleLogin,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2E7D32),
-                                foregroundColor: Colors.white,
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(28),
-                                ),
-                              ),
-                              child: const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Don't have an account? ",
-                          style: TextStyle(color: Color(0xFF6B6B7A)),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              PageRouteBuilder(
-                                transitionDuration: const Duration(
-                                  milliseconds: 500,
-                                ),
-                                pageBuilder: (context, animation, _) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: const SignupScreen(),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Register Now',
-                            style: TextStyle(
-                              color: Color(0xFF2E7D32),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

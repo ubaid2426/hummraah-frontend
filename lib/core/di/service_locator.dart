@@ -1,82 +1,64 @@
-// import 'package:dio/dio.dart';
-// import 'package:get_it/get_it.dart';
-// import '../../features/auth/data/datasources/auth_remote_data_source.dart';
-// import '../../features/auth/data/repositories/auth_repository_impl.dart';
-// import '../../features/auth/domain/repositories/auth_repository.dart';
-// import '../../features/auth/domain/usecases/login.dart';
-// import '../../features/auth/presentation/bloc/auth_bloc.dart';
-
-// final sl = GetIt.instance;
-
-// Future<void> init() async {
-//   // Bloc
-//   sl.registerFactory(() => AuthBloc(sl()));
-
-//   // Use cases
-//   sl.registerLazySingleton(() => Login(sl()));
-
-//   // Repository
-//   sl.registerLazySingleton<AuthRepository>(
-//       () => AuthRepositoryImpl(remoteDataSource: sl()));
-
-//   // Data sources
-//   sl.registerLazySingleton<AuthDataSource>(
-//       () => AuthRemoteDataSource(client: sl()));
- 
-
-//   // External
-//   sl.registerLazySingleton(() => Dio());
-// }
+// injection_container.dart
 import 'package:get_it/get_it.dart';
-
-import '../../features/auth/data/datasources/auth_remote_data_source.dart';
-import '../../features/auth/data/datasources/booking_remote_data_source.dart';
-import '../../features/auth/data/repositories/auth_repository_impl.dart';
-import '../../features/auth/data/repositories/booking_repository_impl.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/domain/repositories/booking_repository.dart';
-import '../../features/auth/domain/usecases/login.dart';
-import '../../features/auth/domain/usecases/get_bookings.dart';
+import 'package:hummraah/core/services/api/api_service.dart';
+import 'package:hummraah/core/services/api/api_client.dart';
+import 'package:hummraah/features/auth/domain/usecases/singup.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/booking_bloc.dart';
-import 'package:hummraah/core/services/api_service.dart';
+import '../../features/auth/domain/usecases/send_otp.dart';
+import '../../features/auth/domain/usecases/verify_otp.dart';
+import '../../features/auth/domain/usecases/create_booking.dart'; // Add this import
+// import '../../features/auth/domain/usecases/signup.dart';
+import '../../features/auth/domain/usecases/get_bookings.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../features/auth/domain/repositories/booking_repository.dart';
+import '../../features/auth/data/repositories/auth_repository_impl.dart';
+import '../../features/auth/data/repositories/booking_repository_impl.dart';
+import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import '../../features/auth/data/datasources/booking_remote_data_source.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // Bloc
-  sl.registerFactory(() => AuthBloc(sl()));
+  // API SERVICE
+  sl.registerLazySingleton<ApiClient>(() => ApiClient());
+  sl.registerLazySingleton<ApiService>(() => ApiService(sl<ApiClient>()));
 
-  // Use cases
-  sl.registerLazySingleton(() => Login(sl()));
-
-  // Repository
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteDataSource: sl()),
+  // AUTH - Data Sources (REGISTER THIS FIRST)
+  sl.registerLazySingleton<AuthDataSource>(
+    () => AuthRemoteDataSourceImpl(sl<ApiService>()),
+  );
+  
+  sl.registerLazySingleton<BookingRemoteDataSource>(
+    () => BookingRemoteDataSourceImpl(sl<ApiService>()),
   );
 
-  // // Data sources
-  // sl.registerLazySingleton<AuthDataSource>(() => AuthRemoteDataSource(sl()));
+  // AUTH - Repositories
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(remoteDataSource: sl<AuthDataSource>()),
+  );
+  
+  sl.registerLazySingleton<BookingRepository>(
+    () => BookingRepositoryImpl(sl<BookingRemoteDataSource>()),
+  );
 
-  // Api Service
-  sl.registerLazySingleton(() => ApiService());
-  // Data sources
-  sl.registerLazySingleton<AuthDataSource>(() => AuthRemoteDataSource(sl()));
+  // AUTH - Use Cases
+  sl.registerLazySingleton(() => SendOtp(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => VerifyOtp(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => Signup(sl<AuthRepository>()));
+  sl.registerLazySingleton(() => GetBookings(sl<BookingRepository>()));
+  sl.registerLazySingleton(() => CreateBooking(sl<BookingRepository>())); // Add this line
 
-
-  // BLOC
-sl.registerFactory(() => BookingBloc(sl()));
-
-// USECASE
-sl.registerLazySingleton(() => GetBookings(sl()));
-
-// REPOSITORY
-sl.registerLazySingleton<BookingRepository>(
-      () => BookingRepositoryImpl(sl()),
-);
-
-// DATASOURCE
-sl.registerLazySingleton<BookingRemoteDataSource>(
-      () => BookingRemoteDataSourceImpl(sl()),
-);
+  // AUTH - Bloc
+  sl.registerFactory(() => AuthBloc(
+    sendOtp: sl<SendOtp>(),
+    verifyOtp: sl<VerifyOtp>(),
+    signup: sl<Signup>(),
+  ));
+  
+  // Update BookingBloc registration to include both usecases
+  sl.registerFactory(() => BookingBloc(
+    getBookings: sl<GetBookings>(),
+    createBooking: sl<CreateBooking>(),
+  ));
 }

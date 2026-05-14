@@ -7,7 +7,8 @@ class UserData {
   final String nationality;
   final String passportNumber;
   final String profileImage;
-  
+  final String cnic;
+
   UserData({
     required this.id,
     required this.name,
@@ -16,6 +17,7 @@ class UserData {
     required this.nationality,
     required this.passportNumber,
     required this.profileImage,
+    required this.cnic,
   });
 
   // Factory constructor for creating a UserData from JSON
@@ -28,6 +30,7 @@ class UserData {
       nationality: json['nationality'] as String,
       passportNumber: json['passportNumber'] as String,
       profileImage: json['profileImage'] as String,
+      cnic:json['cnic'] as String,
     );
   }
 
@@ -41,6 +44,7 @@ class UserData {
       'nationality': nationality,
       'passportNumber': passportNumber,
       'profileImage': profileImage,
+      'cnic' : cnic,
     };
   }
 

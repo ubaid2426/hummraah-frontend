@@ -1,53 +1,33 @@
-// import 'package:dio/dio.dart';
-// import '../models/user_model.dart';
-
-// abstract class AuthDataSource {
-//   Future<UserModel> login(String email, String password);
-// }
-
-// class AuthRemoteDataSource implements AuthDataSource {
-//   final Dio client;
-
-//   AuthRemoteDataSource({required this.client});
-
-//   @override
-//   Future<UserModel> login(String email, String password) async {
-//     final response = await client.post('https://example.com/api/login', data: {
-//       'email': email,
-//       'password': password,
-//     });
-
-//     if (response.statusCode == 200) {
-//       return UserModel.fromJson(response.data);
-//     } else {
-//       throw Exception('Login failed');
-//     }
-//   }
-// }
-import '/core/services/api/api_service.dart';
-import '../models/user_model.dart';
+// data/datasources/auth_remote_data_source.dart
+import 'package:hummraah/core/services/api/api_service.dart';
+import 'package:hummraah/features/auth/data/models/user_model.dart';
 
 abstract class AuthDataSource {
-  Future<UserModel> login(String email, String password);
-  Future<void> register(Map<String, dynamic> data);
+  Future<void> sendOtp(String email);
+  Future<UserModel> signup(Map<String, dynamic> data);
+  Future<UserModel> verifyOtp(String email, String otp);
 }
-class AuthRemoteDataSource implements AuthDataSource {
+
+class AuthRemoteDataSourceImpl implements AuthDataSource {
   final ApiService apiService;
 
-  AuthRemoteDataSource(this.apiService);
+  AuthRemoteDataSourceImpl(this.apiService);
+
 
   @override
-  Future<UserModel> login(String email, String password) async {
-    final response = await apiService.login({
-      "email": email,
-      "password": password,
-    });
+  Future<void> sendOtp(String email) async {
+    await apiService.sendOtp(email);
+  }
 
+  @override
+  Future<UserModel> signup(Map<String, dynamic> data) async {
+    final response = await apiService.register(data);
     return UserModel.fromJson(response);
   }
 
   @override
-  Future<void> register(Map<String, dynamic> data) async {
-    await apiService.register(data);
+  Future<UserModel> verifyOtp(String email, String otp) async {
+    final response = await apiService.verifyOtp(email, otp);
+    return UserModel.fromJson(response);
   }
 }

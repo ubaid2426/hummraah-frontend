@@ -1,22 +1,32 @@
-// lib/screens/profile_screen.dart
 import 'package:flutter/material.dart';
+import 'package:hummraah/features/auth/presentation/pages/Login_Page/login%20_screen.dart';
+import 'package:hummraah/features/auth/presentation/pages/Login_Page/singup_screen.dart';
+import 'package:hummraah/features/auth/presentation/pages/personal_information.dart';
+import 'package:provider/provider.dart';
+
 import 'package:hummraah/features/auth/presentation/pages/about/about_page.dart';
 import 'package:hummraah/features/auth/presentation/pages/faq/faq_page.dart';
-import 'package:hummraah/features/auth/presentation/pages/login_page.dart';
 import 'package:hummraah/features/auth/presentation/pages/testimonials/testimonials_page.dart';
 import '../../../../core/utils/colors.dart';
-// import '../utils/colors.dart';
 import '../widgets/language_selector.dart';
-import 'Login_Page/singup_screen.dart';
+// import 'Login_Page/singup_screen.dart';
+// import 'package:hummraah/features/auth/presentation/pages/edit_profile_screen.dart';
+
+import '../../providers/auth_provider.dart';
+import 'package:hummraah/core/utils/ui_feedback.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.currentUser;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          // ================= APP BAR =================
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
@@ -30,48 +40,36 @@ class ProfileScreen extends StatelessWidget {
                     colors: [AppColors.primaryGreen, AppColors.primaryGold],
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      right: -50,
-                      top: -50,
-                      child: Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.1),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ),
+
+          // ================= BODY =================
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Profile Info
+                  // 👤 PROFILE IMAGE
                   const CircleAvatar(
                     radius: 50,
-                    // backgroundImage: NetworkImage('https://via.placeholder.com/100'),
+                    child: Icon(Icons.person, size: 50),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Abdullah Khan',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'ubaid@example.com',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 24),
 
-                  // Stats
+                  const SizedBox(height: 16),
+
+                  // 👤 NAME
+                  Text(
+                    user?.name ?? "Guest User",
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // ================= STATS =================
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -84,63 +82,79 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 24),
 
-                  // Menu Items
-                  _buildMenuItem(
-                    Icons.person_rounded,
-                    'Personal Information',
-                    () {},
-                  ),
-                  _buildMenuItem(
-                    Icons.card_travel_rounded,
-                    'My Bookings',
-                    () {},
-                  ),
-                  _buildMenuItem(Icons.favorite_rounded, 'Wishlist', () {}),
-                  _buildMenuItem(
-                    Icons.notifications_rounded,
-                    'Notifications',
-                    () {},
-                  ),
-                  _buildMenuItem(Icons.language_rounded, 'Language', () {
+                  // ================= MENU =================
+                  _buildMenuItem(Icons.person, 'Personal Information', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PersonalInformartion(),
+                      ),
+                    );
+                  }),
+
+                  // _buildMenuItem(Icons.edit, 'Edit Profile', () {
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(content: Text("Edit Profile Clicked")),
+                  // );
+
+                  // }),
+                  _buildMenuItem(Icons.card_travel, 'My Bookings', () {}),
+
+                  _buildMenuItem(Icons.favorite, 'Wishlist', () {}),
+
+                  _buildMenuItem(Icons.notifications, 'Notifications', () {}),
+
+                  _buildMenuItem(Icons.language, 'Language', () {
                     showModalBottomSheet(
                       context: context,
-                      builder: (context) => const LanguageSelector(),
+                      builder: (_) => const LanguageSelector(),
                     );
                   }),
-                  _buildMenuItem(Icons.login_rounded, 'Login Page', () {
+
+                  _buildMenuItem(Icons.info, 'About Us', () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                      MaterialPageRoute(builder: (_) => AboutUsScreen()),
                     );
                   }),
-                  _buildMenuItem(Icons.info_rounded, 'About us', () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AboutUsScreen()),
-                    );
-                  }),
+
                   _buildMenuItem(Icons.question_answer, 'FAQ', () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FAQScreen()),
+                      MaterialPageRoute(builder: (_) => FAQScreen()),
                     );
                   }),
+                  _buildMenuItem(Icons.question_answer, 'Login', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginScreen()),
+                    );
+                  }),
+
                   _buildMenuItem(Icons.reviews, 'Testimonials', () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TestimonialsScreen()),
+                      MaterialPageRoute(builder: (_) => TestimonialsScreen()),
                     );
                   }),
-                  _buildMenuItem(Icons.dark_mode_rounded, 'Theme', () {}),
-                  _buildMenuItem(Icons.help_rounded, 'Help & Support', () {}),
-                  _buildMenuItem(
-                    Icons.logout_rounded,
-                    'Logout',
-                    () {},
-                    isLogout: true,
-                  ),
+
+                  // ================= LOGOUT =================
+                  _buildMenuItem(Icons.logout, 'Logout', () {
+                    authProvider.logout();
+
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(content: Text("Logged out successfully")),
+                    // );
+                    UIFeedback.success(context, "Logged out successfully");
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginScreen()),
+                    );
+                  }, isLogout: true),
                 ],
               ),
             ),
@@ -150,6 +164,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // ================= STATS WIDGET =================
   Widget _buildStatCard(String label, String value, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -174,6 +189,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // ================= MENU ITEM =================
   Widget _buildMenuItem(
     IconData icon,
     String title,
@@ -181,32 +197,18 @@ class ProfileScreen extends StatelessWidget {
     bool isLogout = false,
   }) {
     return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: (isLogout ? Colors.red : AppColors.primaryGreen).withOpacity(
-            0.1,
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(
-          icon,
-          color: isLogout ? Colors.red : AppColors.primaryGreen,
-          size: 20,
-        ),
+      leading: Icon(
+        icon,
+        color: isLogout ? Colors.red : AppColors.primaryGreen,
       ),
       title: Text(
         title,
         style: TextStyle(
           color: isLogout ? Colors.red : Colors.black87,
-          fontWeight: isLogout ? FontWeight.w600 : FontWeight.normal,
+          fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios_rounded,
-        size: 16,
-        color: Colors.grey[400],
-      ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 14),
       onTap: onTap,
     );
   }

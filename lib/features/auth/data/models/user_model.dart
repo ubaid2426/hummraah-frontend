@@ -1,31 +1,38 @@
+// data/models/user_model.dart
 import '../../domain/entities/user.dart';
 
 class UserModel extends User {
-  const UserModel({required super.id, required super.email});
+  UserModel({
+    required String email,
+    required String fullName,
+    String? accessToken,
+    String? refreshToken,
+    String? message,
+  }) : super(
+          email: email,
+          fullName: fullName,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          message: message,
+        );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
-      email: json['email'],
+      email: json['email'] ?? '',
+      fullName: json['fullName'] ?? json['name'] ?? '',
+      accessToken: json['accessToken'],
+      refreshToken: json['refreshToken'],
+      message: json['message'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'email': email,
+      'fullName': fullName,
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+      'message': message,
     };
   }
-
-  UserModel copyWith(
-    String? id,
-    String? email,
-  ) {
-    return UserModel(
-      id: id ?? this.id,
-      email: email ?? this.email,
-    );
-  }
-
-  const UserModel.empty() : this(email: "_empty.email", id: "_empty.id");
 }

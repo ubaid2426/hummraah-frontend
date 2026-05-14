@@ -57,18 +57,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       : CrossAxisAlignment.start,
                   children: [
                     Text(
-                      t.translate('assalamu_alaikum'),
+                      t.translate('Aslam O Alaikum!'),
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey[600],
                         fontFamily: 'Poppins',
                       ),
                     ),
+                    // Text(
+                    //   authProvider.isAuthenticated
+                    //       ? authProvider.currentUser?.name ??
+                    //             t.translate('guest')
+                    //       : t.translate('guest'),
+                    //   style: const TextStyle(
+                    //     fontSize: 16,
+                    //     fontWeight: FontWeight.w600,
+                    //     color: Color(0xFF2C5F2D),
+                    //     fontFamily: 'Poppins',
+                    //   ),
+                    // ),
                     Text(
-                      authProvider.isAuthenticated
-                          ? authProvider.currentUser?.name ??
-                                t.translate('guest')
-                          : t.translate('guest'),
+                      // (authProvider.isAuthenticated &&
+                      //         authProvider.currentUser?.name != null &&
+                      //         authProvider.currentUser!.name!.isNotEmpty)
+                      //     ? authProvider.currentUser!.name!
+                      //     : t.translate('guest'),
+                      (authProvider.isAuthenticated &&
+ authProvider.currentUser?.name?.isNotEmpty == true)
+    ? authProvider.currentUser!.name!
+    : "Guest",
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

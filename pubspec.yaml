@@ -107,6 +107,7 @@ flutter:
     - assets/videos/Umraah_Guidance/
     - assets/images/praying_time/svg/
     - assets/json/
+    - assets/animation/
     # - images/a_dot_ham.jpeg
 
   # fonts:

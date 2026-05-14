@@ -1,93 +1,13 @@
-// import 'package:equatable/equatable.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import '../../domain/usecases/login.dart';
-// import '../../domain/entities/user.dart';
-
-// abstract class AuthEvent extends Equatable {
-//   @override
-//   List<Object?> get props => [];
-// }
-
-// class LoginEvent extends AuthEvent {
-//   final String email;
-//   final String password;
-//   LoginEvent(this.email, this.password);
-
-//   @override
-//   List<Object?> get props => [email, password];
-// }
-
-// abstract class AuthState extends Equatable {}
-
-// class AuthInitial extends AuthState {
-//   @override
-//   List<Object?> get props => [];
-// }
-
-// class AuthLoading extends AuthState {
-//   @override
-//   List<Object?> get props => [];
-// }
-
-// class AuthSuccess extends AuthState {
-//   final User user;
-//   AuthSuccess(this.user);
-//   @override
-//   List<Object?> get props => [user];
-// }
-
-// class AuthFailure extends AuthState {
-//   final String message;
-//   AuthFailure(this.message);
-//   @override
-//   List<Object?> get props => [message];
-// }
-
-// // class AuthBloc extends Bloc<AuthEvent, AuthState> {
-// //   final Login login;
-
-// //   AuthBloc(this.login) : super(AuthInitial()) {
-// //     on<LoginEvent>(_onLoginEvent);
-// //   }
-
-// //   void _onLoginEvent(LoginEvent event, Emitter<AuthState> emit) async {
-// //     emit(AuthLoading());
-// //     final result = await login(event);
-// //     result.fold(
-// //       (failure) => emit(AuthFailure('Login failed')),
-// //       (user) => emit(AuthSuccess(user)),
-// //     );
-// //   }
-// // }
-// // import '../../domain/usecases/login.dart';
-
-// class AuthBloc extends Bloc<AuthEvent, AuthState> {
-//   final Login login;
-
-//   AuthBloc(this.login) : super(AuthInitial()) {
-//     on<LoginEvent>(_onLoginEvent);
-//   }
-
-//   void _onLoginEvent(LoginEvent event, Emitter<AuthState> emit) async {
-//     emit(AuthLoading());
-
-//     final result = await login(
-//       LoginParams(
-//         email: event.email,
-//         password: event.password,
-//       ),
-//     );
-
-//     result.fold(
-//       (failure) => emit(AuthFailure('Login failed')),
-//       (user) => emit(AuthSuccess(user)),
-//     );
-//   }
-// }
+// presentation/bloc/auth_bloc.dart
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hummraah/features/auth/domain/usecases/send_otp.dart';
+import 'package:hummraah/features/auth/domain/usecases/singup.dart';
+import 'package:hummraah/features/auth/domain/usecases/verify_otp.dart';
 
-import '../../domain/usecases/login.dart';
+// import '../../domain/usecases/send_otp.dart';
+// import '../../domain/usecases/verify_otp.dart';
+// import '../../domain/usecases/signup.dart';
 import '../../domain/entities/user.dart';
 
 /// ===================== EVENTS =====================
@@ -96,18 +16,28 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// LOGIN EVENT
-class LoginEvent extends AuthEvent {
+/// SEND OTP EVENT
+class SendOtpEvent extends AuthEvent {
   final String email;
-  final String password;
 
-  LoginEvent(this.email, this.password);
+  SendOtpEvent(this.email);
 
   @override
-  List<Object?> get props => [email, password];
+  List<Object?> get props => [email];
 }
 
-/// SIGNUP EVENT (✔ ADDED)
+/// VERIFY OTP EVENT
+class VerifyOtpEvent extends AuthEvent {
+  final String email;
+  final String otp;
+
+  VerifyOtpEvent(this.email, this.otp);
+
+  @override
+  List<Object?> get props => [email, otp];
+}
+
+/// SIGNUP EVENT
 class SignupEvent extends AuthEvent {
   final String fullName;
   final String email;
@@ -149,17 +79,14 @@ class SignupEvent extends AuthEvent {
 }
 
 /// ===================== STATES =====================
-abstract class AuthState extends Equatable {}
-
-class AuthInitial extends AuthState {
+abstract class AuthState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class AuthLoading extends AuthState {
-  @override
-  List<Object?> get props => [];
-}
+class AuthInitial extends AuthState {}
+
+class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
   final User? user;
@@ -182,41 +109,76 @@ class AuthFailure extends AuthState {
 
 /// ===================== BLOC =====================
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final Login login;
+  final SendOtp sendOtp;
+  final VerifyOtp verifyOtp;
+  final Signup signup;
 
-  AuthBloc(this.login) : super(AuthInitial()) {
-    on<LoginEvent>(_onLoginEvent);
-    on<SignupEvent>(_onSignupEvent); // ✔ ADDED
+  AuthBloc({
+    required this.sendOtp,
+    required this.verifyOtp,
+    required this.signup,
+  }) : super(AuthInitial()) {
+    on<SendOtpEvent>(_onSendOtpEvent);
+    on<VerifyOtpEvent>(_onVerifyOtpEvent);
+    on<SignupEvent>(_onSignupEvent);
   }
 
-  /// LOGIN HANDLER
-  void _onLoginEvent(LoginEvent event, Emitter<AuthState> emit) async {
+  /// SEND OTP HANDLER
+  Future<void> _onSendOtpEvent(
+    SendOtpEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(AuthLoading());
-
-    final result = await login(
-      LoginParams(email: event.email, password: event.password),
-    );
-
+    
+    final result = await sendOtp(SendOtpParams(email: event.email));
+    
     result.fold(
-      (failure) => emit(AuthFailure('Login failed')),
-      (user) => emit(AuthSuccess(user: user)),
+      (failure) => emit(AuthFailure(failure.message ?? "Failed to send OTP")),
+      (success) => emit(AuthSuccess(message: "OTP sent successfully")),
     );
   }
 
-  /// SIGNUP HANDLER (✔ ADDED)
+  /// VERIFY OTP HANDLER
+  Future<void> _onVerifyOtpEvent(
+    VerifyOtpEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    
+    final result = await verifyOtp(VerifyOtpParams(
+      email: event.email,
+      otp: event.otp,
+    ));
+    
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message ?? "Invalid OTP")),
+      (user) => emit(AuthSuccess(user: user, message: "Verification successful")),
+    );
+  }
+
+  /// SIGNUP HANDLER
   Future<void> _onSignupEvent(
     SignupEvent event,
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-
-    try {
-      // IMPORTANT:
-      // yahan tum repository inject karoge (agar chaaho main next step me add kar dunga)
-
-      emit(AuthSuccess(message: "Signup successful"));
-    } catch (e) {
-      emit(AuthFailure(e.toString()));
-    }
+    
+    final result = await signup(SignupParams(
+      fullName: event.fullName,
+      email: event.email,
+      mobileNumber: event.mobileNumber,
+      password: event.password,
+      address: event.address,
+      emergencyNumber: event.emergencyNumber,
+      country: event.country,
+      cnic: event.cnic,
+      passportNumber: event.passportNumber,
+      passportExpiryDate: event.passportExpiryDate,
+    ));
+    
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message ?? "Signup failed")),
+      (user) => emit(AuthSuccess(user: user, message: "Signup successful")),
+    );
   }
 }

@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hummraah/core/services/api/api_client.dart';
+import 'package:hummraah/core/services/api/api_service.dart';
+import 'package:hummraah/features/auth/data/datasources/booking_remote_data_source.dart';
+import 'package:hummraah/features/auth/data/repositories/booking_repository_impl.dart';
+import 'package:hummraah/features/auth/domain/usecases/create_booking.dart';
+import 'package:hummraah/features/auth/domain/usecases/get_bookings.dart';
+import 'package:hummraah/features/auth/presentation/bloc/booking_bloc.dart';
+// import 'package:hummraah/features/auth/presentation/bloc/booking_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../book_your_umrah.dart';
@@ -864,10 +873,31 @@ class _AwesomeBookingModalState extends State<AwesomeBookingModal>
                                   duration: const Duration(seconds: 2),
                                 ),
                               );
+                              // When navigating to BookYourUmrahScreen
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => BookYourUmrahScreen(),
+                                  builder: (context) => BlocProvider(
+                                    create: (context) {
+                                      final apiService = ApiService(
+                                        ApiClient(),
+                                      );
+                                      final remoteDataSource =
+                                          BookingRemoteDataSourceImpl(
+                                            apiService,
+                                          );
+                                      final repository = BookingRepositoryImpl(
+                                        remoteDataSource,
+                                      );
+                                      final createBooking = CreateBooking(
+                                        repository,
+                                      );
+                                      return BookingBloc(
+                                        createBooking: createBooking,
+                                      );
+                                    },
+                                    child: const BookYourUmrahScreen(),
+                                  ),
                                 ),
                               );
                             },
