@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hummraah/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:hummraah/features/auth/presentation/pages/Login_Page/login%20_screen.dart';
 import 'package:hummraah/features/auth/presentation/pages/Login_Page/singup_screen.dart';
 import 'package:hummraah/features/auth/presentation/pages/personal_information.dart';
@@ -22,6 +24,11 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final user = authProvider.currentUser;
+    String _getDisplayName(String fullName) {
+      if (fullName.isEmpty) return 'User';
+      final parts = fullName.split(' ');
+      return parts.first;
+    }
 
     return Scaffold(
       body: CustomScrollView(
@@ -59,6 +66,23 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // 👤 NAME
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      if (state is AuthSuccess && state.user != null) {
+                        // final fullName = state.user.fullName;
+                        // final displayName = _getDisplayName(fullName);
+                        return Text(
+                          _getDisplayName(state.user.fullName),
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+
                   Text(
                     user?.name ?? "Guest User",
                     style: const TextStyle(

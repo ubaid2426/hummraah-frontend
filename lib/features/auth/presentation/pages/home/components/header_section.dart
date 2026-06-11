@@ -6,7 +6,7 @@ import 'package:hummraah/core/services/api/api_service.dart';
 import 'package:hummraah/features/auth/data/datasources/booking_remote_data_source.dart';
 import 'package:hummraah/features/auth/data/repositories/booking_repository_impl.dart';
 import 'package:hummraah/features/auth/domain/usecases/create_booking.dart';
-import 'package:hummraah/features/auth/domain/usecases/get_bookings.dart';
+// import 'package:hummraah/features/auth/domain/usercases/get_bookings.dart';
 import 'package:hummraah/features/auth/presentation/bloc/booking_bloc.dart';
 // import 'package:hummraah/features/auth/presentation/bloc/booking_bloc.dart';
 import 'package:intl/intl.dart';
@@ -172,9 +172,6 @@ class _HeaderSectionState extends State<HeaderSection> {
       case 1:
         selectedTabName = "Hajj";
         break;
-      case 2:
-        selectedTabName = "Noble Rawdah";
-        break;
     }
 
     showModalBottomSheet(
@@ -235,7 +232,6 @@ class _HeaderSectionState extends State<HeaderSection> {
               children: [
                 _buildTabBtn("Umrah", 0),
                 _buildTabBtn("Hajj", 1),
-                _buildTabBtn("Noble Rawdah", 2),
               ],
             ),
           ),
@@ -453,7 +449,6 @@ class _AwesomeBookingModalState extends State<AwesomeBookingModal>
     int basePrice = 49999;
 
     if (widget.selectedTab == "Hajj") basePrice = 84999;
-    if (widget.selectedTab == "Noble Rawdah") basePrice = 64999;
 
     if (widget.travelClass == "Business") basePrice = (basePrice * 1.8).toInt();
     if (widget.travelClass == "First Class") basePrice = basePrice * 3;
@@ -571,10 +566,6 @@ class _AwesomeBookingModalState extends State<AwesomeBookingModal>
                       children: [
                         _buildModalTab("Umrah", widget.selectedTab == "Umrah"),
                         _buildModalTab("Hajj", widget.selectedTab == "Hajj"),
-                        _buildModalTab(
-                          "Noble Rawdah",
-                          widget.selectedTab == "Noble Rawdah",
-                        ),
                       ],
                     ),
                   ),

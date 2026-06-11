@@ -190,7 +190,7 @@ class HummraahApp extends StatelessWidget {
               }
             },
 
-            home: const HomeScreen(),
+            home: const SplashScreen(),
           );
         },
       ),

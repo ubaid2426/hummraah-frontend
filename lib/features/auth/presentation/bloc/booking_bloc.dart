@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+// import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hummraah/features/auth/domain/usecases/create_booking.dart';
 import 'package:hummraah/features/auth/presentation/bloc/booking_event.dart';
@@ -6,7 +6,7 @@ import 'package:hummraah/features/auth/presentation/bloc/booking_state.dart';
 
 import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/get_bookings.dart';
-import '../../data/models/booking_model.dart';
+// import '../../data/models/booking_model.dart';
 
 /// ===================== BLOC =====================
 class BookingBloc extends Bloc<BookingEvent, BookingState> {

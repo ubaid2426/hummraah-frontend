@@ -640,17 +640,17 @@ class SpiritualPrepTab extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.primaryGreen,
-                    ),
-                    child: const Text('Learn More →'),
-                  ),
-                ),
+                // const SizedBox(height: 16),
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: TextButton(
+                //     onPressed: () {},
+                //     style: TextButton.styleFrom(
+                //       foregroundColor: AppColors.primaryGreen,
+                //     ),
+                //     child: const Text('Learn More →'),
+                //   ),
+                // ),
               ],
             ),
           ),

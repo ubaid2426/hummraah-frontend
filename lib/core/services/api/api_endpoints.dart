@@ -1,5 +1,6 @@
 class ApiEndpoints {
-  static const String baseUrl = "http://localhost:8080";
+  static const String baseUrl = "https://unattractive-costlier-archie.ngrok-free.dev";
+  // static const String baseUrl = "http://localhost:8080";
 
   static const String register = "/auth/register";
   static const String verifyOtp = "/auth/verify-otp";

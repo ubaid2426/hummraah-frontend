@@ -9,17 +9,17 @@ class UserModel extends User {
     String? refreshToken,
     String? message,
   }) : super(
-          email: email,
-          fullName: fullName,
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-          message: message,
-        );
+         email: email,
+         fullName: fullName,
+         accessToken: accessToken,
+         refreshToken: refreshToken,
+         message: message,
+       );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       email: json['email'] ?? '',
-      fullName: json['fullName'] ?? json['name'] ?? '',
+      fullName: json['fullName'] ?? json['name'] ?? 'User', // Provide default
       accessToken: json['accessToken'],
       refreshToken: json['refreshToken'],
       message: json['message'],

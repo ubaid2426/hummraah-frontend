@@ -1,4 +1,4 @@
-import 'package:http/http.dart';
+// import 'package:http/http.dart';
 
 import 'api_client.dart';
 import 'api_endpoints.dart';
@@ -34,7 +34,7 @@ class ApiService {
 
   // Update profile
   Future<dynamic> updateProfile(Map<String, dynamic> data) async {
-    return await client.put(ApiEndpoints.completeProfile, data);
+    return await client.post(ApiEndpoints.completeProfile, data);
   }
 
     Future<dynamic> createBooking(Map<String, dynamic> data) async {

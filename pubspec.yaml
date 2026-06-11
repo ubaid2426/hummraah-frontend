@@ -104,6 +104,8 @@ flutter:
   assets:
     - assets/lang/
     - assets/images/Home_Screen/
+    - assets/images/logo/
+    - assets/images/icon/
     - assets/videos/Umraah_Guidance/
     - assets/images/praying_time/svg/
     - assets/json/
@@ -127,16 +129,16 @@ flutter:
   #         weight: 700          
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-# flutter_launcher_icons:
-#   android: true
-#   ios: true
-#   image_path: "assets/images/icons/app_icon.png"
-#   adaptive_icon_background: "#2C5F2D"
-#   adaptive_icon_foreground: "assets/images/icons/app_icon_foreground.png"
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon/app_icon.png"
+  adaptive_icon_background: "#2C5F2D"
+  adaptive_icon_foreground: "assets/images/icons/app_icon_foreground.png"
 
-# flutter_native_splash:
-#   color: "#F8F5F0"
-#   image: "assets/images/icons/splash_icon.png"
-#   android: true
-#   ios: true
-#   web: false
+flutter_native_splash:
+  color: "#F8F5F0"
+  image: "assets/images/icon/app_icon.png"
+  android: true
+  ios: true
+  web: false

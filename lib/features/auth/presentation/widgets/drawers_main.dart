@@ -16,6 +16,7 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   String _appVersion = "Loading...";
+  
   @override
   void initState() {
     super.initState();
@@ -29,6 +30,15 @@ class _MainDrawerState extends State<MainDrawer> {
     });
   }
 
+  Future<void> _shareApp() async {
+    const String appLink = "https://play.google.com/store/apps/details?id=com.example.hummraah"; // Replace with your actual app link
+    
+    await Share.share(
+      "Check out this amazing app! Download it now: $appLink",
+      subject: "Hummraah App - Your Umrah Companion",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -36,10 +46,9 @@ class _MainDrawerState extends State<MainDrawer> {
       child: Column(
         children: [
           DrawerHeader(
-            // padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.primaryGreen],
+                colors: [AppColors.primaryGreen, AppColors.primaryGreen],
                 begin: Alignment.bottomRight,
                 end: Alignment.topLeft,
               ),
@@ -47,18 +56,16 @@ class _MainDrawerState extends State<MainDrawer> {
             child: Row(
               children: [
                 Container(
-                  height: 260,
-                  width: 260,
+                  height: 280,
+                  width: 270,
                   decoration: const BoxDecoration(
-                    // image: DecorationImage(
-                    //   image: AssetImage(
-                    //     'assets/images/login/applogo.png',
-                    //   ), // Adjust the image path
-                    //   fit: BoxFit.contain, // Adjust the fit as needed
-                    // ),
-                    
+                    image: DecorationImage(
+                      image: AssetImage(
+                        'assets/images/logo/logo.png',
+                      ),
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                  // child: AssetsVideo
                 ),
               ],
             ),
@@ -68,7 +75,6 @@ class _MainDrawerState extends State<MainDrawer> {
               children: [
                 const ManyOption(
                   menuTitle: "Home",
-                  // ignore: deprecated_member_use
                   fontawesome: FontAwesomeIcons.home,
                   navigateTo: HomeScreen(),
                 ),
@@ -84,7 +90,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   ],
                   fontawesome: FontAwesomeIcons.layerGroup,
                 ),
-                 const DonationMenu(
+                const DonationMenu(
                   menuTitle: 'Quick Services',
                   subOptions: [
                     "Flights",
@@ -96,7 +102,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   ],
                   fontawesome: FontAwesomeIcons.layerGroup,
                 ),
-                 const DonationMenu(
+                const DonationMenu(
                   menuTitle: 'Religious Tools',
                   subOptions: [
                     "Prayer Times",
@@ -109,41 +115,68 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
                 const ManyOption(
                   menuTitle: "Ziyarah Planner",
-                  // ignore: deprecated_member_use
                   fontawesome: FontAwesomeIcons.car,
                   navigateTo: ZiyarahPlanner(),
                 ),
                 const ManyOption(
                   menuTitle: "Local Services",
-                  // ignore: deprecated_member_use
                   fontawesome: FontAwesomeIcons.rightToBracket,
                   navigateTo: ServicesScreen(),
                 ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    _appVersion,
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    const String appLink =
-                        "https://ls?id=com.example.autobazzaar"; // Android link
-                    // For iOS: "https://apps.apple.com/app/idYOUR_APP_ID"
-
-                    Share.share(
-                      "Check out this amazing app! Download it now: $appLink",
-                    );
-                  },
-                  icon: const Icon(Icons.share),
-                  label: const Text("Share App"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryGreen,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 20), // Add some spacing
+                
+                // Share Button and Version in a Container
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        // Share Button
+                        ElevatedButton.icon(
+                          onPressed: _shareApp,
+                          icon: const Icon(Icons.share, size: 20),
+                          label: const Text(
+                            "Share App",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryGreen,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(double.infinity, 45),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        
+                        // Version Container
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _appVersion,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -160,6 +193,7 @@ class ManyOption extends StatelessWidget {
   final String menuTitle;
   final IconData fontawesome;
   final Widget navigateTo;
+  
   const ManyOption({
     super.key,
     required this.menuTitle,
@@ -170,7 +204,6 @@ class ManyOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      selectedColor: AppColors.primaryGreen,
       leading: Icon(
         fontawesome,
         size: 18,
@@ -184,19 +217,12 @@ class ManyOption extends StatelessWidget {
         ),
       ),
       onTap: () {
-        // Handle the tap event here
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => navigateTo,
-            // builder: (context) => const QiblaApp(),
           ),
         );
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (context) => navigateTo), // Navigate to the screen
-        // );
       },
     );
   }
@@ -206,7 +232,7 @@ class DonationMenu extends StatefulWidget {
   final String menuTitle;
   final List<String> subOptions;
   final IconData fontawesome;
-  // bool _isExpanded = false;
+  
   const DonationMenu({
     super.key,
     required this.menuTitle,
@@ -220,6 +246,7 @@ class DonationMenu extends StatefulWidget {
 
 class _DonationMenuState extends State<DonationMenu> {
   bool _isExpanded = false;
+  
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -238,8 +265,6 @@ class _DonationMenuState extends State<DonationMenu> {
           _isExpanded = expanded;
         });
       },
-
-      //  selectedColor: Color(0xFF7fc23a),
       title: Container(
         height: 50,
         width: MediaQuery.of(context).size.width,
@@ -249,6 +274,7 @@ class _DonationMenuState extends State<DonationMenu> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const SizedBox(width: 16),
             Icon(
               widget.fontawesome,
               size: 18,
@@ -257,104 +283,47 @@ class _DonationMenuState extends State<DonationMenu> {
                   : const Color.fromARGB(255, 12, 12, 12),
             ),
             const SizedBox(width: 20),
-            Row(
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  widget.menuTitle,
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 16,
-                  ),
-                ),
-                Icon(
-                  _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: _isExpanded ? Colors.white : Colors.black,
-                ),
-              ],
+            Text(
+              widget.menuTitle,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: _isExpanded ? Colors.white : Colors.black87,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
+            const Spacer(),
+            Icon(
+              _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+              color: _isExpanded ? Colors.white : Colors.black87,
+              size: 24,
+            ),
+            const SizedBox(width: 16),
           ],
         ),
       ),
-
-      // Customize the background color based on the expanded state
       children: widget.subOptions.map((option) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(50, 0, 0, 0),
           child: ListTile(
-            title: Text(option),
+            title: Text(
+              option,
+              style: const TextStyle(fontSize: 14),
+            ),
             onTap: () {
-              // Action for each sub-option
+              // Handle sub-option tap
+              Navigator.pop(context); // Close drawer
+              // Add your navigation logic here based on the option
               switch (option) {
-                case 'Call US':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const CallUs(),
-                  //   ),
-                  // );
+                case 'Pre-Umraah Preparation':
+                  // Navigate to Pre-Umraah Preparation screen
                   break;
-                case 'Working Hours':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const WorkingHour(),
-                  //   ),
-                  // );
+                case 'Travel & Logistics':
+                  // Navigate to Travel & Logistics screen
                   break;
-                case 'Branches':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const Branches(),
-                  //   ),
-                  // );
-                  break;
-
-                case 'Single Donation':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const SingleHeading(),
-                  //   ),
-                  // );
-                  break;
-
-                case 'Group Donation':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const GroupHeading(),
-                  //   ),
-                  // );
-                  break;
-                case 'Zakat Calculator':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const ZakatCalculator(),
-                  //   ),
-                  // );
-                  break;
-                case 'Individual Donation':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const IndividualHeading(),
-                  //   ),
-                  // );
-                  break;
-                case 'Need Support':
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const NeedCategory(),
-                  //   ),
-                  // );
-                  break;
-                // Add other cases for remaining options...
+                // Add other cases...
                 default:
-                // print('$option tapped');
+                  // Handle default case
+                  break;
               }
             },
           ),

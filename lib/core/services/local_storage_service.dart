@@ -9,11 +9,8 @@ class LocalStorageService {
 
   late SharedPreferences _prefs;
   static Future<LocalStorageService> getInstance() async {
-    if (_instance == null) {
-      // _instance = LocalStorageService();
-      // await _instance!._init();
-    }
-    return _instance!;
+
+    return _instance;
   }
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();

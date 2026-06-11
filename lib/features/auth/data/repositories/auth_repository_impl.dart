@@ -47,7 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       
       await _storageService.setString('userEmail', user.email);
-      await _storageService.setString('userName', user.fullName);
+      await _storageService.setString('userName', user.fullName!);
       
       // Save user object
       await _storageService.setObject('user', {
