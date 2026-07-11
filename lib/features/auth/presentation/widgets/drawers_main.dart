@@ -118,6 +118,11 @@ class _MainDrawerState extends State<MainDrawer> {
                   fontawesome: FontAwesomeIcons.car,
                   navigateTo: ZiyarahPlanner(),
                 ),
+                ManyOption(
+                  menuTitle: "AI Concierge Service",
+                  fontawesome: FontAwesomeIcons.car,
+                  navigateTo: HomeScreen(),
+                ),
                 const ManyOption(
                   menuTitle: "Local Services",
                   fontawesome: FontAwesomeIcons.rightToBracket,
